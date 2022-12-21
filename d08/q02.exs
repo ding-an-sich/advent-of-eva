@@ -79,33 +79,8 @@ defmodule Grid do
       end)
     end)
   end
-
-  @doc """
-  Switches the x and y positions
-  of a two-dimensional grid of trees.
-
-  Not sure if this operation is called
-  transpose, I'm just trying to be clever here.
-  """
-  def transpose(grid) do
-    grid
-    |> Enum.flat_map(& &1)
-    |> Enum.reduce(%{}, fn tree, map ->
-      {_, map} =
-        Map.get_and_update(map, tree.x, fn
-          nil -> {nil, [tree]}
-          trees -> {trees, trees ++ [tree]}
-        end)
-
-      map
-    end)
-    |> Enum.map(fn {_y, row} -> row end)
-  end
 end
 
 grid = Grid.make_grid()
-
 flattened_grid = Enum.flat_map(grid, & &1)
-target_tree = Enum.find(flattened_grid, &(&1.x == 1 and &1.y == 2))
-TreeSpotter.scenic_value(target_tree, flattened_grid)
 flattened_grid |> Enum.map(&TreeSpotter.scenic_value(&1, flattened_grid)) |> Enum.max() |> dbg()
